@@ -62,6 +62,6 @@ var wpLinkL10n = {"title":"Insert\/edit link","update":"Update","save":"Add Link
 <script type='text/javascript' src='../../../../../wp-includes/js/wplink.js?ver=4.5.2'></script>
 ```
 
-# Credits
+## Credits
 
 By [XWP](https://make.xwp.co). Licensed GPLv2.

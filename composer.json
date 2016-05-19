@@ -1,0 +1,25 @@
+{
+    "name": "xwp/wp-qunit-print-script-dependencies",
+    "type": "wordpress-plugin",
+    "description": "Print dependencies for scripts to be tested and then add into a QUnit HTML test runner file. Uses wp_print_scripts().",
+    "license": "GPLv2",
+    "authors": [
+        {
+            "name": "Weston Ruter",
+            "homepage": "http://make.xwp.co",
+            "role": "Developer"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "files": [ "qunit-print-script-dependencies.php" ]
+    },
+    "require": {
+        "composer/installers": "v1.0.25"
+    },
+    "extras": {
+        "commands": [
+            "qunit-print-script-dependencies"
+        ]
+    }
+}

@@ -97,9 +97,13 @@ class QUnit_Print_Script_Dependencies_WP_CLI_Command {
 			$actions = explode( ',', $assoc_args['do_actions'] );
 		}
 		if ( ! empty( $actions ) ) {
+			ob_start();
 			foreach ( $actions as $action ) {
 				do_action( $action );
 			}
+			$output = ob_get_clean();
+			$output = preg_replace( '#<link.*?>#', '', $output );
+			echo $output; // WPCS: XSS OK.
 		}
 
 		if ( ! empty( $assoc_args['base_href'] ) ) {

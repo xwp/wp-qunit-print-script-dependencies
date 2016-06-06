@@ -43,9 +43,12 @@ class QUnit_Print_Script_Dependencies_WP_CLI_Command {
 	 * [--base_href=<url>]
 	 * : Overrides the base URL used for printed scripts. Useful to supply a relative path to ABSPATH from QUnit HTML runner.
 	 *
+	 * [--do_actions=<actions>]
+	 * : List of actions to do before printing scripts, useful to include additional data needed as fixtures.
+	 *
 	 * ## EXAMPLES
 	 *
-	 *     wp qunit-print-script-dependencies customize-controls
+	 *     wp qunit-print-script-dependencies customize-controls --do_actions=customize_controls_enqueue_scripts
 	 *     wp qunit-print-script-dependencies acme-widget acme-menu --base_href=../../../../../
 	 *
 	 * @todo Add a plugin param to help automate the generation of local paths.
@@ -74,6 +77,14 @@ class QUnit_Print_Script_Dependencies_WP_CLI_Command {
 				$script_tag
 			);
 		};
+
+		$actions = array();
+		if ( ! empty( $assoc_args['do_actions'] ) ) {
+			$actions = explode( ',', $assoc_args['do_actions'] );
+			foreach ( $actions as $action ) {
+				do_action( $action );
+			}
+		}
 
 		if ( ! empty( $assoc_args['base_href'] ) ) {
 			add_filter( 'script_loader_tag', $rewrite_script_loader_tag_base_href );

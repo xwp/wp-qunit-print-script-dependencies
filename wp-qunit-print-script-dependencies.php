@@ -43,6 +43,9 @@ class QUnit_Print_Script_Dependencies_WP_CLI_Command {
 	 * [--base_href=<url>]
 	 * : Overrides the base URL used for printed scripts. Useful to supply a relative path to ABSPATH from QUnit HTML runner.
 	 *
+	 * [--boot_customize_controls]
+	 * : Whether Customizer controls should be booted. This will automatically append some actions to be done.
+	 *
 	 * [--do_actions=<actions>]
 	 * : List of actions to do before printing scripts, useful to include additional data needed as fixtures.
 	 *
@@ -57,6 +60,8 @@ class QUnit_Print_Script_Dependencies_WP_CLI_Command {
 	 * @param array $assoc_args     Associative args.
 	 */
 	public function __invoke( $script_handles, $assoc_args ) {
+		global $wp_customize;
+
 		$wp_scripts = wp_scripts();
 		foreach ( $script_handles as $script_handle ) {
 			if ( ! $wp_scripts->query( $script_handle, 'registered' ) ) {
@@ -79,8 +84,19 @@ class QUnit_Print_Script_Dependencies_WP_CLI_Command {
 		};
 
 		$actions = array();
+		if ( isset( $assoc_args['boot_customize_controls'] ) ) {
+			require_once ABSPATH . WPINC . '/class-wp-customize-manager.php';
+			$wp_customize = new \WP_Customize_Manager(); // WPCS: Allow override.
+			do_action( 'customize_register', $wp_customize );
+			$actions[] = 'customize_controls_init';
+			$actions[] = 'customize_controls_enqueue_scripts';
+			$actions[] = 'customize_controls_print_scripts';
+			$actions[] = 'customize_controls_print_footer_scripts';
+		}
 		if ( ! empty( $assoc_args['do_actions'] ) ) {
 			$actions = explode( ',', $assoc_args['do_actions'] );
+		}
+		if ( ! empty( $actions ) ) {
 			foreach ( $actions as $action ) {
 				do_action( $action );
 			}
@@ -89,7 +105,9 @@ class QUnit_Print_Script_Dependencies_WP_CLI_Command {
 		if ( ! empty( $assoc_args['base_href'] ) ) {
 			add_filter( 'script_loader_tag', $rewrite_script_loader_tag_base_href );
 		}
+		echo "<div hidden>\n";
 		$dependencies = wp_print_scripts( $script_handles );
+		echo "</div>\n";
 		if ( ! empty( $assoc_args['base_href'] ) ) {
 			remove_filter( 'script_loader_tag', $rewrite_script_loader_tag_base_href );
 		}

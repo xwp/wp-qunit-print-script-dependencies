@@ -96,6 +96,8 @@ class QUnit_Print_Script_Dependencies_WP_CLI_Command {
 		if ( ! empty( $assoc_args['do_actions'] ) ) {
 			$actions = explode( ',', $assoc_args['do_actions'] );
 		}
+
+		echo "<div hidden>\n";
 		if ( ! empty( $actions ) ) {
 			ob_start();
 			foreach ( $actions as $action ) {
@@ -109,7 +111,6 @@ class QUnit_Print_Script_Dependencies_WP_CLI_Command {
 		if ( ! empty( $assoc_args['base_href'] ) ) {
 			add_filter( 'script_loader_tag', $rewrite_script_loader_tag_base_href );
 		}
-		echo "<div hidden>\n";
 		$dependencies = wp_print_scripts( $script_handles );
 		echo "</div>\n";
 		if ( ! empty( $assoc_args['base_href'] ) ) {

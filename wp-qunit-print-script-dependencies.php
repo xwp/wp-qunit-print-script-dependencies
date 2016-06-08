@@ -83,6 +83,10 @@ class QUnit_Print_Script_Dependencies_WP_CLI_Command {
 			);
 		};
 
+		if ( ! empty( $assoc_args['base_href'] ) ) {
+			add_filter( 'script_loader_tag', $rewrite_script_loader_tag_base_href );
+		}
+
 		$actions = array();
 		if ( isset( $assoc_args['boot_customize_controls'] ) ) {
 			require_once ABSPATH . WPINC . '/class-wp-customize-manager.php';
@@ -108,9 +112,6 @@ class QUnit_Print_Script_Dependencies_WP_CLI_Command {
 			echo $output; // WPCS: XSS OK.
 		}
 
-		if ( ! empty( $assoc_args['base_href'] ) ) {
-			add_filter( 'script_loader_tag', $rewrite_script_loader_tag_base_href );
-		}
 		$dependencies = wp_print_scripts( $script_handles );
 		echo "</div>\n";
 		if ( ! empty( $assoc_args['base_href'] ) ) {
